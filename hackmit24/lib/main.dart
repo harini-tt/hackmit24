@@ -11,7 +11,6 @@ Future main() async {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,34 +26,44 @@ class MyApp extends StatelessWidget {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
   final String title;
+
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   DatabaseMethods databaseMethods = DatabaseMethods();
-  getStatsData() async {
-    DatabaseMethods databaseMethods = DatabaseMethods();
-    var dining_info = await databaseMethods.getDiningHallInfo('MIT', 'maseeh');
-    return dining_info;
+  String diningInfo = "Loading..."; // To store and display dining hall info
+
+  @override
+  void initState() {
+    super.initState();
+    fetchDiningHallInfo();
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+  Future<void> fetchDiningHallInfo() async {
+    try {
+      // Fetch dining hall info from Firestore
+      var diningInfoSnapshot =
+          await databaseMethods.getDiningHallInfo('MIT', 'maseeh');
+
+      // Check if the document exists
+      if (diningInfoSnapshot.exists) {
+        var data = diningInfoSnapshot.data() as Map<String, dynamic>;
+        setState(() {
+          diningInfo = "hall name: ${data['hall_name']}, open: ${data['open']}";
+        });
+      } else {
+        setState(() {
+          diningInfo = "Dining hall info not found.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        diningInfo = "Error fetching dining hall info: $e";
+      });
+    }
   }
 
   @override
@@ -69,19 +78,20 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text(
-              'You have pushed the button this many times:',
+              'Dining Hall Information:',
             ),
             Text(
-              '$_counter',
+              diningInfo, // Display the dining hall info here
               style: Theme.of(context).textTheme.headlineMedium,
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed:
+            fetchDiningHallInfo, // Refresh the dining hall info on button press
+        tooltip: 'Fetch Dining Hall Info',
+        child: const Icon(Icons.refresh),
       ),
     );
   }
