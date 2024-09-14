@@ -45,14 +45,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> fetchDiningHallInfo() async {
     try {
       // Fetch dining hall info from Firestore
-      var diningInfoSnapshot =
-          await databaseMethods.getDiningHallInfo('MIT', 'maseeh');
+      var diningInfoSnapshot = await databaseMethods
+          .getReviewsForMeal("mit_lunch_maseeh_cheese_pizza");
 
       // Check if the document exists
       if (diningInfoSnapshot.exists) {
         var data = diningInfoSnapshot.data() as Map<String, dynamic>;
         setState(() {
-          diningInfo = "hall name: ${data['hall_name']}, open: ${data['open']}";
+          diningInfo = "comment: ${data['comment']}, name: ${data['name']}";
         });
       } else {
         setState(() {
