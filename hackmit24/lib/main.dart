@@ -47,18 +47,12 @@ class _MyHomePageState extends State<MyHomePage> {
       // Fetch dining hall info from Firestore
       var diningInfoSnapshot = await databaseMethods
           .getReviewsForMeal("mit_lunch_maseeh_cheese_pizza");
-
+      print(diningInfoSnapshot);
       // Check if the document exists
-      if (diningInfoSnapshot.exists) {
-        var data = diningInfoSnapshot.data() as Map<String, dynamic>;
-        setState(() {
-          diningInfo = "comment: ${data['comment']}, name: ${data['name']}";
-        });
-      } else {
-        setState(() {
-          diningInfo = "Dining hall info not found.";
-        });
-      }
+      var data = diningInfoSnapshot.data() as Map<String, dynamic>;
+      setState(() {
+        diningInfo = "comment: ${data['comment']}, name: ${data['name']}";
+      });
     } catch (e) {
       setState(() {
         diningInfo = "Error fetching dining hall info: $e";

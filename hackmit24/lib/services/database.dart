@@ -39,6 +39,7 @@ class DatabaseMethods {
           }
         }
       }
+      return list;
     }
   }
 
