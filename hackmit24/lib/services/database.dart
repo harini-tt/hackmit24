@@ -52,4 +52,12 @@ class DatabaseMethods {
         .doc(dining_hall)
         .get();
   }
+
+  // Future<void> addReview(String student, String mealReviewId, String dishID, double rating, String comment) async {
+  //    CollectionReference dishesCollection = FirebaseFirestore.instance
+  //       .collection('student')
+  //       .doc(student)
+  //       .collection('reviews');
+  //       .doc(dishID)
+  // }
 }
